@@ -41,8 +41,7 @@
     ]
   },
   "dependencies": {
-    "core-js": "^3.2.1",
-    "yargs": "^15.1.0"
+    "core-js": "^3.2.1"
   },
   "devDependencies": {
     "@babel/cli": "7.7.7",

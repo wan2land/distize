@@ -7,20 +7,20 @@ describe('testsuite of utils/lit-packages', () => {
   it('test listPackages', async () => {
     const expected = [
       'node_modules/core-js',
-    ].map(path => `${BASE_PATH}/${path}`)
+    ].map(path => `${BASE_PATH}/${path}`).sort()
 
-    await expect(listPackages()).resolves.toEqual(expected)
-    await expect(listPackages({ noDeps: false })).resolves.toEqual(expected)
-    await expect(listPackages({ devDeps: false })).resolves.toEqual(expected)
-    await expect(listPackages({ noDeps: false, devDeps: false })).resolves.toEqual(expected)
+    expect((await listPackages()).sort()).toEqual(expected)
+    expect((await listPackages({ noDeps: false })).sort()).toEqual(expected)
+    expect((await listPackages({ devDeps: false })).sort()).toEqual(expected)
+    expect((await listPackages({ noDeps: false, devDeps: false })).sort()).toEqual(expected)
   }, 10000)
 
   it('test listPackages, noDeps=true', async () => {
     const expected = [
-    ].map(path => `${BASE_PATH}/${path}`)
+    ].map(path => `${BASE_PATH}/${path}`).sort()
 
-    await expect(listPackages({ noDeps: true })).resolves.toEqual(expected)
-    await expect(listPackages({ noDeps: true, devDeps: false })).resolves.toEqual(expected)
+    expect((await listPackages({ noDeps: true })).sort()).toEqual(expected)
+    expect((await listPackages({ noDeps: true, devDeps: false })).sort()).toEqual(expected)
   }, 10000)
 
   it('test listPackages, devDeps=true', async () => {
@@ -592,16 +592,12 @@ describe('testsuite of utils/lit-packages', () => {
       'node_modules/realpath-native',
       'node_modules/util.promisify',
       'node_modules/object.getownpropertydescriptors',
-      'node_modules/yargs',
-      'node_modules/cliui',
-      'node_modules/wrap-ansi',
       'node_modules/get-caller-file',
       'node_modules/require-directory',
       'node_modules/require-main-filename',
       'node_modules/set-blocking',
       'node_modules/which-module',
       'node_modules/y18n',
-      'node_modules/yargs-parser',
       'node_modules/decamelize',
       'node_modules/rimraf',
       'node_modules/ts-jest',
@@ -611,9 +607,9 @@ describe('testsuite of utils/lit-packages', () => {
       'node_modules/lodash.memoize',
       'node_modules/make-error',
       'node_modules/typescript',
-    ].map(path => `${BASE_PATH}/${path}`)
+    ].map(path => `${BASE_PATH}/${path}`).sort()
 
-    await expect(listPackages({ devDeps: true })).resolves.toEqual(expected)
-    await expect(listPackages({ devDeps: true, noDeps: false })).resolves.toEqual(expected)
+    expect((await listPackages({ devDeps: true })).sort()).toEqual(expected)
+    expect((await listPackages({ devDeps: true, noDeps: false })).sort()).toEqual(expected)
   }, 10000)
 })

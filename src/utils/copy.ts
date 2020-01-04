@@ -13,7 +13,7 @@ function lstatPromise(path: string): Promise<Stats> {
 }
 
 function existsPromise(path: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     exists(path, (exists) => {
       return resolve(exists)
     })
@@ -22,7 +22,7 @@ function existsPromise(path: string): Promise<boolean> {
 
 function mkdirPromise(path: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    mkdir(path, { recursive: true },(err) => {
+    mkdir(path, { recursive: true }, (err) => {
       if (err) {
         return reject(err)
       }
