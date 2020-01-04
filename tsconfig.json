@@ -7,12 +7,15 @@
       "es2017",
       "esnext.asynciterable"
     ],
-    "emitDeclarationOnly": true,
+    "outDir": "lib",
     "declaration": true,
     "pretty": true,
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
     "noImplicitReturns": true
-  }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }
