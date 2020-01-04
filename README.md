@@ -40,3 +40,43 @@ await copyNodeModules('dest', options: {
   devDeps: true,
 })
 ```
+
+## Examples
+
+### with AWS CDK
+
+When you deploy your Lambda project using the AWS CDK, you also need to deploy `node_modules`.
+Lambda has a capacity limit. You can use **distize** to copy `node_modules` except` devDependencies`.
+
+file: `package.json`
+
+```json
+{
+  "scripts": {
+    "build": "rimraf ./dist && babel ./src --out-dir ./dist --extensions \".ts\" && distize ./dist",
+    "deploy": "npm run build && cdk deploy"
+  },
+  "dependencies": {
+    "core-js": "^3.6.0"
+  },
+  "devDependencies": {
+    "@aws-cdk/aws-apigateway": "^1.19.0",
+    "@aws-cdk/aws-lambda": "^1.19.0",
+    "@aws-cdk/core": "^1.19.0",
+    "@babel/cli": "7.7.7",
+    "@babel/core": "7.7.7",
+    "@babel/plugin-proposal-class-properties": "7.7.4",
+    "@babel/plugin-proposal-decorators": "7.7.4",
+    "@babel/plugin-proposal-object-rest-spread": "7.7.7",
+    "@babel/preset-env": "7.7.7",
+    "@babel/preset-typescript": "7.7.7",
+    "@types/aws-lambda": "^8.10.39",
+    "@types/graphql": "14.5.0",
+    "@types/node": "^12.12.21",
+    "aws-cdk": "^1.19.0",
+    "distize": "0.0.1",
+    "rimraf": "^3.0.0",
+    "source-map-support": "^0.5.16",
+    "typescript": "^3.7.3"
+  }
+}
