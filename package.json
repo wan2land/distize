@@ -1,0 +1,62 @@
+{
+  "name": "distize",
+  "version": "0.0.1",
+  "description": ".",
+  "keywords": [
+    "build",
+    "copy",
+    "node_modules",
+    "dist",
+    "typescript"
+  ],
+  "author": "Changwan Jun <wan2land@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wan2land/distize.git"
+  },
+  "bin": {
+    "distize": "lib/bin/cli.js"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "prepack": "npm run test && npm run build",
+    "build": "rimraf ./lib && tsc --emitDeclarationOnly && babel src --out-dir lib --extensions \".ts\" --source-maps inline",
+    "test": "npm run build && npm run test:lint && npm run test:unit",
+    "test:lint": "eslint src/**/**/*.ts",
+    "test:unit": "jest test"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "[^/]*\\.test.tsx?$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
+  },
+  "dependencies": {
+    "core-js": "^3.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.7.7",
+    "@babel/core": "7.7.7",
+    "@babel/plugin-proposal-class-properties": "7.7.4",
+    "@babel/plugin-proposal-object-rest-spread": "7.7.7",
+    "@babel/preset-env": "7.7.7",
+    "@babel/preset-typescript": "7.7.7",
+    "@stdjs/eslint-config": "0.2.1",
+    "@types/jest": "24.0.24",
+    "@types/node": "12.12.22",
+    "eslint": "6.8.0",
+    "jest": "24.9.0",
+    "rimraf": "3.0.0",
+    "ts-jest": "24.2.0",
+    "typescript": "3.7.4"
+  }
+}
