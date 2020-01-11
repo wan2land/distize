@@ -41,7 +41,10 @@
     ]
   },
   "dependencies": {
-    "core-js": "^3.2.1"
+    "command-line-args": "^5.1.1",
+    "command-line-usage": "^6.1.0",
+    "core-js": "^3.2.1",
+    "globby": "^10.0.1"
   },
   "devDependencies": {
     "@babel/cli": "7.7.7",
@@ -51,6 +54,8 @@
     "@babel/preset-env": "7.7.7",
     "@babel/preset-typescript": "7.7.7",
     "@stdjs/eslint-config": "0.2.1",
+    "@types/command-line-args": "^5.0.0",
+    "@types/command-line-usage": "^5.0.1",
     "@types/jest": "24.0.24",
     "@types/node": "12.12.22",
     "eslint": "6.8.0",

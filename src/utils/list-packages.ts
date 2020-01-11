@@ -3,7 +3,13 @@ import { exec } from 'child_process'
 
 const RE_NODE_MODULES = /\/node_modules\//g
 
-export function listPackages(options: { cwd?: string, devDeps?: boolean, noDeps?: boolean } = {}): Promise<string[]> {
+export interface ListPackagesOptions {
+  cwd?: string
+  devDeps?: boolean
+  noDeps?: boolean
+}
+
+export function listPackages(options: ListPackagesOptions = {}): Promise<string[]> {
   let command = 'npm ls --prod=true --parseable=true'
   if (options.devDeps && options.noDeps) {
     command = 'npm ls --dev=true --parseable=true'

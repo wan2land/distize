@@ -1,5 +1,6 @@
 import { exists, lstat, mkdir, readdir, readFile, Stats, writeFile } from 'fs'
-import { join } from 'path'
+import { join, resolve } from 'path'
+
 
 function lstatPromise(path: string): Promise<Stats> {
   return new Promise((resolve, reject) => {
@@ -64,16 +65,26 @@ function writeFilePromise(path: string, data: any): Promise<void> {
   })
 }
 
-
-export async function copy(source: string, target: string): Promise<void> {
-  if ((await lstatPromise(source)).isDirectory()) {
-    if (!(await existsPromise(target))) {
-      await mkdirPromise(target)
+async function copyOrCreateDirectory(src: string, dest: string): Promise<void> {
+  if ((await lstatPromise(src)).isDirectory()) {
+    if (!(await existsPromise(dest))) {
+      await mkdirPromise(dest)
     }
-    (await readdirPromise(source)).forEach((file) => {
-      copy(join(source, file), join(target, file))
+    (await readdirPromise(src)).forEach((file) => {
+      copyOrCreateDirectory(join(src, file), join(dest, file))
     })
-  } else if (!(await existsPromise(target))) {
-    await writeFilePromise(target, await readFilePromise(source))
+  } else if (!(await existsPromise(dest))) {
+    await writeFilePromise(dest, await readFilePromise(src))
   }
+}
+
+export function copy(src: string | string[], dest: string): Promise<void> {
+  if (!dest) {
+    throw new TypeError('Missing destination directory argument.')
+  }
+  return Promise.all((Array.isArray(src) ? src : [src]).map((src) => {
+    const absSrc = resolve(process.cwd(), src)
+    const absDest = resolve(process.cwd(), dest, absSrc.replace(process.cwd(), '').replace(/^\/+/, ''))
+    return copyOrCreateDirectory(absSrc, absDest)
+  })).then(() => Promise.resolve())
 }
