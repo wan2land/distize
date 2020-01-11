@@ -1,5 +1,5 @@
 import { exists, lstat, mkdir, readdir, readFile, Stats, writeFile } from 'fs'
-import { join, resolve } from 'path'
+import { join, resolve, dirname } from 'path'
 
 
 function lstatPromise(path: string): Promise<Stats> {
@@ -65,26 +65,41 @@ function writeFilePromise(path: string, data: any): Promise<void> {
   })
 }
 
-async function copyOrCreateDirectory(src: string, dest: string): Promise<void> {
+async function copyOrCreateDirectory(src: string, dest: string, options: { debug?: boolean } = {}): Promise<void> {
   if ((await lstatPromise(src)).isDirectory()) {
-    if (!(await existsPromise(dest))) {
+    if (!await existsPromise(dest)) {
+      if (options.debug) {
+        console.log(`create directory ${dest}`)
+      }
       await mkdirPromise(dest)
     }
     (await readdirPromise(src)).forEach((file) => {
       copyOrCreateDirectory(join(src, file), join(dest, file))
     })
-  } else if (!(await existsPromise(dest))) {
+  } else if (!await existsPromise(dest)) {
+    const destDir = dirname(dest)
+    if (!await existsPromise(destDir)) {
+      if (options.debug) {
+        console.log(`create directory ${destDir}`)
+      }
+      await mkdirPromise(destDir)
+    }
+    if (options.debug) {
+      console.log(`copy file "${src}" to "${dest}"`)
+    }
     await writeFilePromise(dest, await readFilePromise(src))
   }
 }
 
-export function copy(src: string | string[], dest: string): Promise<void> {
+export function copy(src: string | string[], dest: string, options: { debug?: boolean } = {}): Promise<void> {
   if (!dest) {
     throw new TypeError('Missing destination directory argument.')
   }
-  return Promise.all((Array.isArray(src) ? src : [src]).map((src) => {
-    const absSrc = resolve(process.cwd(), src)
-    const absDest = resolve(process.cwd(), dest, absSrc.replace(process.cwd(), '').replace(/^\/+/, ''))
-    return copyOrCreateDirectory(absSrc, absDest)
-  })).then(() => Promise.resolve())
+  return (Array.isArray(src) ? src : [src]).reduce((carry, src) => {
+    return carry.then(() => {
+      const absSrc = resolve(process.cwd(), src)
+      const absDest = resolve(process.cwd(), dest, absSrc.replace(process.cwd(), '').replace(/^\/+/, ''))
+      return copyOrCreateDirectory(absSrc, absDest, options)
+    })
+  }, Promise.resolve())
 }

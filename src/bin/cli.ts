@@ -65,10 +65,12 @@ if (args.help) {
 globby(args.src.length > 0 ? args.src : '.', {
   ignore: args.ignore || [],
 }).then((files) => {
-  return copy(files, args.out)
+  console.log('copy source files...')
+  return copy(files, args.out, { debug: args.verbose })
 }).then(() => {
+  console.log('copy node_modules files...')
   return args['no-modules'] ? Promise.resolve() : copyNodeModules(args.out, {
     cwd: args['module-path'],
-    noDeps: args.dev,
+    devDeps: args.dev,
   })
 })
