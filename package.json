@@ -25,20 +25,7 @@
     "build": "rimraf ./lib && tsc --emitDeclarationOnly && babel src --out-dir lib --extensions \".ts\" --source-maps inline",
     "test": "npm run build && npm run test:lint && npm run test:unit",
     "test:lint": "eslint src/**/**/*.ts",
-    "test:unit": "jest test"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "[^/]*\\.test.tsx?$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ]
+    "test:unit": "jest"
   },
   "dependencies": {
     "command-line-args": "^5.1.1",

@@ -1,4 +1,4 @@
-import { lstat, MakeDirectoryOptions, mkdir, readdir, readFile, rmdir, Stats, unlink, writeFile } from 'fs'
+import { lstat, mkdir, readdir, readFile, rmdir, Stats, unlink, writeFile } from 'fs'
 import { dirname, join, resolve } from 'path'
 
 

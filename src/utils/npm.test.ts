@@ -3,10 +3,10 @@ import { listPackages } from './npm'
 
 describe('testsuite of utils/npm', () => {
   it('test listPackages', async () => {
-    expect((await listPackages()).length).toEqual(47)
-    expect((await listPackages({ noDeps: false })).length).toEqual(47)
-    expect((await listPackages({ devDeps: false })).length).toEqual(47)
-    expect((await listPackages({ noDeps: false, devDeps: false })).length).toEqual(47)
+    expect((await listPackages()).length).toEqual(61)
+    expect((await listPackages({ noDeps: false })).length).toEqual(61)
+    expect((await listPackages({ devDeps: false })).length).toEqual(61)
+    expect((await listPackages({ noDeps: false, devDeps: false })).length).toEqual(61)
   }, 10000)
 
   it('test listPackages, noDeps=true', async () => {
@@ -15,7 +15,7 @@ describe('testsuite of utils/npm', () => {
   }, 10000)
 
   it('test listPackages, devDeps=true', async () => {
-    expect((await listPackages({ devDeps: true })).length).toEqual(608)
-    expect((await listPackages({ devDeps: true, noDeps: false })).length).toEqual(608)
+    expect((await listPackages({ devDeps: true })).length).toEqual(618)
+    expect((await listPackages({ devDeps: true, noDeps: false })).length).toEqual(618)
   }, 10000)
 })
