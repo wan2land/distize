@@ -4,9 +4,11 @@
   "description": ".",
   "keywords": [
     "build",
-    "copy",
     "node_modules",
-    "dist",
+    "distribute",
+    "distribution",
+    "awscdk",
+    "cdk",
     "typescript"
   ],
   "author": "Changwan Jun <wan2land@gmail.com>",
