@@ -10,7 +10,7 @@
   <a href="https://david-dm.org/wan2land/distize?type=dev"><img alt="devDependencies Status" src="https://img.shields.io/david/dev/wan2land/distize.svg?style=flat-square" /></a>
 </p>
 
-Copy current `node_modules` without `devDependencies` to destination directory.
+Copy source files and `node_modules` without `devDependencies` to destination directory.
 
 ## Installation
 
@@ -23,22 +23,37 @@ npm install distize --save
 ### CLI
 
 ```bash
-npx distize dest
-npx distize dest --dev # npx distize dest -D
+npx distize
+npx distize ./build --ignore ./src --out output
 ```
 
 ### API
 
 ```ts
-copyNodeModules(dest: string, options: { cwd?: string, devDeps?: boolean, noDeps?: boolean } = {}): Promise<void>
+interface DistizeOptions {
+    src: string[] | string
+    out?: string
+    ignore?: string[]
+    noModules?: boolean
+    cwd?: string
+    devDeps?: false
+}
+
+interface DistizeEventEmitter extends EventEmitter {
+    on(event: 'progress', listener: (name: 'CLEAN' | 'COPY_SOURCES' | 'COPY_NODE_MODULES') => void): this
+    on(event: 'fs_mkdir', listener: (path: string) => void): this
+    on(event: 'fs_copy', listener: (src: string, dest: string) => void): this
+    on(event: 'done', listener: () => void): this
+}
+
+function distize(options: DistizeOptions): DistizeEventEmitter
 ```
 
 ```js
-import { copyNodeModules } from 'distize'
+import { distize } from 'distize'
 
-await copyNodeModules('dest', options: {
-  devDeps: true,
-})
+await distize({ src: '.' })
+await distize({ src: './build', out: './dist' })
 ```
 
 ## Examples
@@ -53,7 +68,7 @@ file: `package.json`
 ```json
 {
   "scripts": {
-    "build": "rimraf ./dist && babel ./src --out-dir ./dist --extensions \".ts\" && distize ./dist",
+    "build": "rimraf ./build && babel ./src --out-dir ./build --extensions \".ts\" && distize ./build --out ./dist",
     "deploy": "npm run build && cdk deploy"
   },
   "dependencies": {

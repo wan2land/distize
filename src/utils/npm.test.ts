@@ -1,7 +1,7 @@
-import { listPackages } from './list-packages'
+import { listPackages } from './npm'
 
 
-describe('testsuite of utils/lit-packages', () => {
+describe('testsuite of utils/npm', () => {
   it('test listPackages', async () => {
     expect((await listPackages()).length).toEqual(47)
     expect((await listPackages({ noDeps: false })).length).toEqual(47)

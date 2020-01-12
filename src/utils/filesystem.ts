@@ -90,8 +90,10 @@ export function remove(path: string): Promise<void> {
     }
     return unlinkPromise(path)
   }).catch((e) => {
-    console.log('remove error', e)
-    return Promise.resolve()
+    if (e.code === 'ENOENT') {
+      return
+    }
+    return console.error(e)
   })
 }
 
@@ -105,7 +107,7 @@ export function copyFile(src: string, dest: string, options: CopyOptions = {}): 
     // src is directory
     if (srcStat.isDirectory()) {
       return readdirPromise(src).then((files) => files.reduce((carry, file) => {
-        return carry.then(() => copyFile(join(src, file), join(dest, file)))
+        return carry.then(() => copyFile(join(src, file), join(dest, file), options))
       }, Promise.resolve()))
     }
 
@@ -117,23 +119,17 @@ export function copyFile(src: string, dest: string, options: CopyOptions = {}): 
         if (e.code === 'ENOENT') {
           return
         }
-        console.log('remove dest error', dest, e)
-        return Promise.resolve()
+        return console.error(e)
       })
       .then(() => lstatPromise(destDir))
       .catch((e) => {
         if (e.code === 'ENOENT') {
-          options.onCreateDirectory?.(destDir)
-          return mkdirRecursivePromise(destDir)
+          return mkdirRecursivePromise(destDir).then(() => options.onCreateDirectory?.(destDir))
         }
-        console.log('unknown path not exists...!!', dest, destDir)
-        return Promise.resolve()
+        return console.error(e)
       })
       .then(() => readFilePromise(src))
-      .then((body) => {
-        options.onCopyFile?.(src, dest)
-        return writeFilePromise(dest, body)
-      })
+      .then((body) => writeFilePromise(dest, body).then(() => options.onCopyFile?.(src, dest)))
   })
 }
 

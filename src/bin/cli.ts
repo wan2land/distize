@@ -2,11 +2,9 @@
 
 import commandLineArgs from 'command-line-args'
 import commandLineUsage from 'command-line-usage'
-import globby from 'globby'
 import ora from 'ora'
 
-import { copyNodeModules } from '../copy-node-modules'
-import { copyManyFiles, remove } from '../utils/filesystem'
+import { distize } from '../distize'
 
 
 const cmdOptions = [
@@ -64,46 +62,41 @@ if (args.help) {
 }
 
 const cwd = process.cwd()
-let spinner = ora(`Remove old dist files, "${args.out}"`).start()
 
-function onCreateDirectory(path: string) {
-  spinner.text = `Create directory "${path.replace(cwd, '').replace(/^\/+/, '')}"`
+const app = distize({
+  src: args.src.length > 0 ? args.src : '.',
+  out: args.out,
+  ignore: args.ignore,
+  cwd: args['module-path'],
+  noModules: args['no-modules'],
+  devDeps: args.dev,
+})
+
+let spinner = ora(`Clean old dist files, "${args.out}"`).start()
+app.on('progress', (name) => {
+  switch (name) {
+    case 'COPY_SOURCES': {
+      spinner.succeed()
+      spinner = ora('Copy source files').start()
+      break
+    }
+    case 'COPY_NODE_MODULES': {
+      spinner.succeed()
+      spinner = ora('Copy node_modules').start()
+      break
+    }
+  }
+})
+app.on('done', () => {
+  spinner.succeed()
+})
+
+if (args.verbose) {
+  // console.log('wow')
+  app.on('fs_mkdir', (path) => {
+    console.log(`> Create directory "${path.replace(cwd, '').replace(/^\/+/, '')}"`)
+  })
+  app.on('fs_copy', (src, dest) => {
+    console.log(`> Copy file "${src.replace(cwd, '').replace(/^\/+/, '')}" to "${dest.replace(cwd, '').replace(/^\/+/, '')}"`)
+  })
 }
-
-function onCopyFile(src: string, dest: string) {
-  spinner.text = `Copy file "${src.replace(cwd, '').replace(/^\/+/, '')}" to "${dest.replace(cwd, '').replace(/^\/+/, '')}"`
-}
-
-remove(args.out)
-  .then(() => {
-    spinner.succeed(`Remove old dist files, "${args.out}"`)
-    spinner = ora('Loading source files').start()
-    return globby(args.src.length > 0 ? args.src : '.', {
-      ignore: [
-        ...args.ignore || [],
-        args.out,
-        'node_modules',
-      ],
-    })
-  })
-  .then((files) => {
-    spinner.succeed()
-    spinner = ora('Copy source files').start()
-    return copyManyFiles(files, args.out, {
-      onCreateDirectory: args.verbose ? onCreateDirectory : void 0,
-      onCopyFile: args.verbose ? onCopyFile : void 0,
-    })
-  })
-  .then(() => {
-    spinner.succeed('Copy source files')
-    spinner = ora('Copy node_modules').start()
-    return args['no-modules'] ? Promise.resolve() : copyNodeModules(args.out, {
-      cwd: args['module-path'],
-      devDeps: args.dev,
-      onCreateDirectory: args.verbose ? onCreateDirectory : void 0,
-      onCopyFile: args.verbose ? onCopyFile : void 0,
-    })
-  })
-  .then(() => {
-    spinner.succeed('Copy node_modules')
-  })

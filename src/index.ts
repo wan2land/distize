@@ -1,2 +1,7 @@
 
-export { copyNodeModules } from './copy-node-modules'
+import { distize } from './distize'
+
+export {
+  distize,
+}
+export default distize
