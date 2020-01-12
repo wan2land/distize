@@ -1,5 +1,5 @@
-import { exists, lstat, mkdir, readdir, readFile, Stats, writeFile } from 'fs'
-import { join, resolve, dirname } from 'path'
+import { lstat, MakeDirectoryOptions, mkdir, readdir, readFile, rmdir, Stats, unlink, writeFile } from 'fs'
+import { dirname, join, resolve } from 'path'
 
 
 function lstatPromise(path: string): Promise<Stats> {
@@ -13,15 +13,7 @@ function lstatPromise(path: string): Promise<Stats> {
   })
 }
 
-function existsPromise(path: string): Promise<boolean> {
-  return new Promise((resolve) => {
-    exists(path, (exists) => {
-      return resolve(exists)
-    })
-  })
-}
-
-function mkdirPromise(path: string): Promise<void> {
+function mkdirRecursivePromise(path: string): Promise<void> {
   return new Promise((resolve, reject) => {
     mkdir(path, { recursive: true }, (err) => {
       if (err) {
@@ -65,33 +57,87 @@ function writeFilePromise(path: string, data: any): Promise<void> {
   })
 }
 
-async function copyOrCreateDirectory(src: string, dest: string, options: { debug?: boolean } = {}): Promise<void> {
-  if ((await lstatPromise(src)).isDirectory()) {
-    if (!await existsPromise(dest)) {
-      if (options.debug) {
-        console.log(`create directory ${dest}`)
+function rmdirPromise(path: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    rmdir(path, (err) => {
+      if (err) {
+        return reject(err)
       }
-      await mkdirPromise(dest)
-    }
-    (await readdirPromise(src)).forEach((file) => {
-      copyOrCreateDirectory(join(src, file), join(dest, file))
+      return resolve()
     })
-  } else if (!await existsPromise(dest)) {
-    const destDir = dirname(dest)
-    if (!await existsPromise(destDir)) {
-      if (options.debug) {
-        console.log(`create directory ${destDir}`)
-      }
-      await mkdirPromise(destDir)
-    }
-    if (options.debug) {
-      console.log(`copy file "${src}" to "${dest}"`)
-    }
-    await writeFilePromise(dest, await readFilePromise(src))
-  }
+  })
 }
 
-export function copy(src: string | string[], dest: string, options: { debug?: boolean } = {}): Promise<void> {
+function unlinkPromise(path: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    unlink(path, (err) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve()
+    })
+  })
+}
+
+export function remove(path: string): Promise<void> {
+  return lstatPromise(path).then((status) => {
+    if (status.isDirectory()) {
+      return readdirPromise(path)
+        .then((files) => files.reduce((carry, file) => {
+          return carry.then(() => remove(join(path, file)))
+        }, Promise.resolve()))
+        .then(() => rmdirPromise(path))
+    }
+    return unlinkPromise(path)
+  }).catch((e) => {
+    console.log('remove error', e)
+    return Promise.resolve()
+  })
+}
+
+export interface CopyOptions {
+  onCreateDirectory?: (path: string) => any
+  onCopyFile?: (src: string, dest: string) => any
+}
+
+export function copyFile(src: string, dest: string, options: CopyOptions = {}): Promise<void> {
+  return lstatPromise(src).then((srcStat) => {
+    // src is directory
+    if (srcStat.isDirectory()) {
+      return readdirPromise(src).then((files) => files.reduce((carry, file) => {
+        return carry.then(() => copyFile(join(src, file), join(dest, file)))
+      }, Promise.resolve()))
+    }
+
+    const destDir = dirname(dest)
+
+    return lstatPromise(dest)
+      .then(() => remove(dest))
+      .catch((e) => {
+        if (e.code === 'ENOENT') {
+          return
+        }
+        console.log('remove dest error', dest, e)
+        return Promise.resolve()
+      })
+      .then(() => lstatPromise(destDir))
+      .catch((e) => {
+        if (e.code === 'ENOENT') {
+          options.onCreateDirectory?.(destDir)
+          return mkdirRecursivePromise(destDir)
+        }
+        console.log('unknown path not exists...!!', dest, destDir)
+        return Promise.resolve()
+      })
+      .then(() => readFilePromise(src))
+      .then((body) => {
+        options.onCopyFile?.(src, dest)
+        return writeFilePromise(dest, body)
+      })
+  })
+}
+
+export function copyManyFiles(src: string | string[], dest: string, options: CopyOptions = {}): Promise<void> {
   if (!dest) {
     throw new TypeError('Missing destination directory argument.')
   }
@@ -99,7 +145,7 @@ export function copy(src: string | string[], dest: string, options: { debug?: bo
     return carry.then(() => {
       const absSrc = resolve(process.cwd(), src)
       const absDest = resolve(process.cwd(), dest, absSrc.replace(process.cwd(), '').replace(/^\/+/, ''))
-      return copyOrCreateDirectory(absSrc, absDest, options)
+      return copyFile(absSrc, absDest, options)
     })
   }, Promise.resolve())
 }

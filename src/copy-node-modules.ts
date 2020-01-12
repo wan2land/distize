@@ -1,10 +1,9 @@
 import { join } from 'path'
 
-import { copy } from './utils/filesystem'
+import { copyManyFiles, CopyOptions } from './utils/filesystem'
 import { listPackages } from './utils/list-packages'
 
-export interface CopyNodeModulesOptions {
-  debug?: boolean
+export interface CopyNodeModulesOptions extends CopyOptions {
   cwd?: string
   devDeps?: false
 }
@@ -15,9 +14,8 @@ export function copyNodeModules(dest: string, options: CopyNodeModulesOptions = 
   }
   return listPackages(options)
     .then((pkgAbsPaths) => {
-      return Promise.all(pkgAbsPaths.map((pkgAbsPath) => {
-        return copy(pkgAbsPath, join(dest, pkgAbsPath.slice(pkgAbsPath.indexOf('node_modules/'))), { debug: options.debug })
-      }))
+      return pkgAbsPaths.reduce((carry, pkgAbsPath) => {
+        return carry.then(() => copyManyFiles(pkgAbsPath, join(dest, pkgAbsPath.slice(pkgAbsPath.indexOf('node_modules/'))), options))
+      }, Promise.resolve())
     })
-    .then(() => Promise.resolve())
 }

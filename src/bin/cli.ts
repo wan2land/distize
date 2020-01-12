@@ -3,9 +3,10 @@
 import commandLineArgs from 'command-line-args'
 import commandLineUsage from 'command-line-usage'
 import globby from 'globby'
+import ora from 'ora'
 
 import { copyNodeModules } from '../copy-node-modules'
-import { copy } from '../utils/filesystem'
+import { copyManyFiles, remove } from '../utils/filesystem'
 
 
 const cmdOptions = [
@@ -62,15 +63,47 @@ if (args.help) {
   process.exit(args.help ? 0 : 1)
 }
 
-globby(args.src.length > 0 ? args.src : '.', {
-  ignore: args.ignore || [],
-}).then((files) => {
-  console.log('copy source files...')
-  return copy(files, args.out, { debug: args.verbose })
-}).then(() => {
-  console.log('copy node_modules files...')
-  return args['no-modules'] ? Promise.resolve() : copyNodeModules(args.out, {
-    cwd: args['module-path'],
-    devDeps: args.dev,
+const cwd = process.cwd()
+let spinner = ora(`Remove old dist files, "${args.out}"`).start()
+
+function onCreateDirectory(path: string) {
+  spinner.text = `Create directory "${path.replace(cwd, '').replace(/^\/+/, '')}"`
+}
+
+function onCopyFile(src: string, dest: string) {
+  spinner.text = `Copy file "${src.replace(cwd, '').replace(/^\/+/, '')}" to "${dest.replace(cwd, '').replace(/^\/+/, '')}"`
+}
+
+remove(args.out)
+  .then(() => {
+    spinner.succeed(`Remove old dist files, "${args.out}"`)
+    spinner = ora('Loading source files').start()
+    return globby(args.src.length > 0 ? args.src : '.', {
+      ignore: [
+        ...args.ignore || [],
+        args.out,
+        'node_modules',
+      ],
+    })
   })
-})
+  .then((files) => {
+    spinner.succeed()
+    spinner = ora('Copy source files').start()
+    return copyManyFiles(files, args.out, {
+      onCreateDirectory: args.verbose ? onCreateDirectory : void 0,
+      onCopyFile: args.verbose ? onCopyFile : void 0,
+    })
+  })
+  .then(() => {
+    spinner.succeed('Copy source files')
+    spinner = ora('Copy node_modules').start()
+    return args['no-modules'] ? Promise.resolve() : copyNodeModules(args.out, {
+      cwd: args['module-path'],
+      devDeps: args.dev,
+      onCreateDirectory: args.verbose ? onCreateDirectory : void 0,
+      onCopyFile: args.verbose ? onCopyFile : void 0,
+    })
+  })
+  .then(() => {
+    spinner.succeed('Copy node_modules')
+  })
