@@ -1,6 +1,9 @@
 /node_modules
 /lib
 
+# testing
+/dist 
+
 .vscode
 .idea
 
