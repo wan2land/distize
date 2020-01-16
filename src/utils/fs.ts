@@ -1,6 +1,5 @@
 import { lstat, mkdir, readdir, readFile, rmdir, Stats, unlink, writeFile } from 'fs'
-import { dirname, join, resolve } from 'path'
-
+import { dirname, join } from 'path'
 
 function lstatPromise(path: string): Promise<Stats> {
   return new Promise((resolve, reject) => {
@@ -98,16 +97,15 @@ export function remove(path: string): Promise<void> {
 }
 
 export interface CopyOptions {
-  onCreateDirectory?: (path: string) => any
-  onCopyFile?: (src: string, dest: string) => any
+  onCopy?: (src: string, dest: string) => any
 }
 
-export function copyFile(src: string, dest: string, options: CopyOptions = {}): Promise<void> {
+export function copy(src: string, dest: string, options: CopyOptions = {}): Promise<void> {
   return lstatPromise(src).then((srcStat) => {
     // src is directory
     if (srcStat.isDirectory()) {
       return readdirPromise(src).then((files) => files.reduce((carry, file) => {
-        return carry.then(() => copyFile(join(src, file), join(dest, file), options))
+        return carry.then(() => copy(join(src, file), join(dest, file), options))
       }, Promise.resolve()))
     }
 
@@ -124,24 +122,11 @@ export function copyFile(src: string, dest: string, options: CopyOptions = {}): 
       .then(() => lstatPromise(destDir))
       .catch((e) => {
         if (e.code === 'ENOENT') {
-          return mkdirRecursivePromise(destDir).then(() => options.onCreateDirectory?.(destDir))
+          return mkdirRecursivePromise(destDir)
         }
         return console.error(e)
       })
       .then(() => readFilePromise(src))
-      .then((body) => writeFilePromise(dest, body).then(() => options.onCopyFile?.(src, dest)))
+      .then((body) => writeFilePromise(dest, body).then(() => options.onCopy?.(src, dest)))
   })
-}
-
-export function copyManyFiles(src: string | string[], dest: string, options: CopyOptions = {}): Promise<void> {
-  if (!dest) {
-    throw new TypeError('Missing destination directory argument.')
-  }
-  return (Array.isArray(src) ? src : [src]).reduce((carry, src) => {
-    return carry.then(() => {
-      const absSrc = resolve(process.cwd(), src)
-      const absDest = resolve(process.cwd(), dest, absSrc.replace(process.cwd(), '').replace(/^\/+/, ''))
-      return copyFile(absSrc, absDest, options)
-    })
-  }, Promise.resolve())
 }

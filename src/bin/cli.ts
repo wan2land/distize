@@ -65,17 +65,18 @@ const cwd = process.cwd()
 
 const app = distize({
   src: args.src.length > 0 ? args.src : '.',
+  basePath: cwd,
   out: args.out,
   ignore: args.ignore,
-  cwd: args['module-path'],
+  modulePath: args['module-path'],
   noModules: args['no-modules'],
-  devDeps: args.dev,
+  dev: args.dev,
 })
 
 let spinner = ora(`Clean old dist files, "${args.out}"`).start()
 app.on('progress', (name) => {
   switch (name) {
-    case 'COPY_SOURCES': {
+    case 'COPY_SOURCE_FILES': {
       spinner.succeed()
       spinner = ora('Copy source files').start()
       break
@@ -92,11 +93,7 @@ app.on('done', () => {
 })
 
 if (args.verbose) {
-  // console.log('wow')
-  app.on('fs_mkdir', (path) => {
-    console.log(`> Create directory "${path.replace(cwd, '').replace(/^\/+/, '')}"`)
-  })
-  app.on('fs_copy', (src, dest) => {
+  app.on('copy', (src, dest) => {
     console.log(`> Copy file "${src.replace(cwd, '').replace(/^\/+/, '')}" to "${dest.replace(cwd, '').replace(/^\/+/, '')}"`)
   })
 }

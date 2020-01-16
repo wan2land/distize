@@ -35,5 +35,5 @@ describe('testsuite of copy-node-modules', () => {
     for (const dep of deps) {
       expect(expectNodeModules).toContain(`dist/node_modules/${dep}`)
     }
-  }, 3000)
+  }, 10000)
 })
