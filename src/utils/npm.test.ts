@@ -1,21 +1,53 @@
-import { listPackages } from './npm'
+import { resolve } from 'path'
 
+import { listPackagePaths } from './npm'
+
+const deps = Object.keys(require('../../package.json').dependencies) // eslint-disable-line
+const devDeps = Object.keys(require('../../package.json').devDependencies) // eslint-disable-line
 
 describe('testsuite of utils/npm', () => {
-  it('test listPackages', async () => {
-    expect((await listPackages()).length).toEqual(61)
-    expect((await listPackages({ noDeps: false })).length).toEqual(61)
-    expect((await listPackages({ devDeps: false })).length).toEqual(61)
-    expect((await listPackages({ noDeps: false, devDeps: false })).length).toEqual(61)
+  const BASE_PATH = resolve(__dirname, '../..')
+
+  it('test dependencies loading', () => {
+    expect(deps.length).toBeGreaterThan(0)
+    expect(devDeps.length).toBeGreaterThan(0)
+  })
+
+  it('test listPackagePaths', async () => {
+    const packages = await listPackagePaths()
+
+    for (const dep of deps) {
+      expect(packages).toContain(`${BASE_PATH}/node_modules/${dep}`)
+    }
+    for (const devDep of devDeps) {
+      expect(packages).not.toContain(`${BASE_PATH}/node_modules/${devDep}`)
+    }
+
+    // Same Options
+    expect(await listPackagePaths({ noDeps: false })).toEqual(packages)
+    expect(await listPackagePaths({ devDeps: false })).toEqual(packages)
+    expect(await listPackagePaths({ noDeps: false, devDeps: false })).toEqual(packages)
   }, 10000)
 
-  it('test listPackages, noDeps=true', async () => {
-    expect((await listPackages({ noDeps: true })).length).toEqual(0)
-    expect((await listPackages({ noDeps: true, devDeps: false })).length).toEqual(0)
+  it('test listPackagePaths, noDeps=true', async () => {
+    const packages = await listPackagePaths({ noDeps: true })
+    expect(packages).toEqual([])
+
+    // Same Options
+    expect(await listPackagePaths({ noDeps: true, devDeps: false })).toEqual(packages)
   }, 10000)
 
-  it('test listPackages, devDeps=true', async () => {
-    expect((await listPackages({ devDeps: true })).length).toEqual(618)
-    expect((await listPackages({ devDeps: true, noDeps: false })).length).toEqual(618)
+  it('test listPackagePaths, devDeps=true', async () => {
+    const packages = await listPackagePaths({ devDeps: true })
+
+    for (const dep of deps) {
+      expect(packages).toContain(`${BASE_PATH}/node_modules/${dep}`)
+    }
+    for (const devDep of devDeps) {
+      expect(packages).toContain(`${BASE_PATH}/node_modules/${devDep}`)
+    }
+
+    // Same Options
+    expect(await listPackagePaths({ devDeps: true, noDeps: false })).toEqual(packages)
   }, 10000)
 })

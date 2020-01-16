@@ -1,7 +1,4 @@
 import { exec } from 'child_process'
-import { join } from 'path'
-
-import { copyManyFiles, CopyOptions } from './filesystem'
 
 
 const RE_NODE_MODULES = /\/node_modules\//g
@@ -12,7 +9,7 @@ export interface ListPackagesOptions {
   noDeps?: boolean
 }
 
-export function listPackages(options: ListPackagesOptions = {}): Promise<string[]> {
+export function listPackagePaths(options: ListPackagesOptions = {}): Promise<string[]> {
   let command = 'npm ls --prod=true --parseable=true'
   if (options.devDeps && options.noDeps) {
     command = 'npm ls --dev=true --parseable=true'
@@ -31,21 +28,4 @@ export function listPackages(options: ListPackagesOptions = {}): Promise<string[
       resolve(packages)
     })
   })
-}
-
-export interface CopyNodeModulesOptions extends CopyOptions {
-  cwd?: string
-  devDeps?: false
-}
-
-export function copyNodeModules(dest: string, options: CopyNodeModulesOptions = {}): Promise<void> {
-  if (!dest) {
-    throw new TypeError('Missing destination directory argument.')
-  }
-  return listPackages(options)
-    .then((pkgAbsPaths) => {
-      return pkgAbsPaths.reduce((carry, pkgAbsPath) => {
-        return carry.then(() => copyManyFiles(pkgAbsPath, join(dest, pkgAbsPath.slice(pkgAbsPath.indexOf('node_modules/'))), options))
-      }, Promise.resolve())
-    })
 }
