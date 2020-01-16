@@ -10,30 +10,32 @@ export interface DistizeOptions {
   src: string[] | string
   basePath?: string
   out?: string
-  ignore?: string[]
   modulePath?: string
   noModules?: boolean
   dev?: false
 }
 
-export interface DistizeEventEmitter extends EventEmitter {
+export interface DistizeResult extends Promise<void> {
   on(event: 'progress', listener: (name: 'CLEAN' | 'COPY_SOURCE_FILES' | 'COPY_NODE_MODULES') => void): this
   on(event: 'copy', listener: (src: string, dest: string) => void): this
   on(event: 'done', listener: () => void): this
 }
 
-export function distize(options: DistizeOptions): DistizeEventEmitter {
+export function distize(options: DistizeOptions): DistizeResult {
   const basePath = options.basePath || process.cwd()
   const dest = resolve(basePath, options.out || 'dist')
 
   const emitter = new EventEmitter()
-  emitter.emit('progress', 'CLEAN')
 
   function onCopy(src: string, dest: string) {
     emitter.emit('copy', src, dest)
   }
 
-  remove(dest)
+  const promise = Promise.resolve()
+    .then(() => {
+      emitter.emit('progress', 'CLEAN')
+      return remove(dest)
+    })
     .then(() => {
       emitter.emit('progress', 'COPY_SOURCE_FILES')
       return copySourceFiles(options.src, dest, {
@@ -55,5 +57,11 @@ export function distize(options: DistizeOptions): DistizeEventEmitter {
       emitter.emit('done')
     })
 
-  return emitter
+  Object.assign(promise, {
+    on(event: string, listener: any) {
+      emitter.on(event, listener)
+      return promise
+    },
+  })
+  return promise as DistizeResult
 }

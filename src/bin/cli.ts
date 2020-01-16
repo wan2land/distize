@@ -16,8 +16,6 @@ const cmdOptions = [
 
   { group: 'build', name: 'out', alias: 'o', type: String, description: 'Copy all input files into an output directory.\n[default: {bold dist}]', defaultValue: 'dist' },
 
-  { group: 'build', name: 'ignore', type: String, multiple: true },
-
   { group: 'modules', name: 'no-modules', type: Boolean, description: 'Copy files without node_modules.' },
   { group: 'modules', name: 'module-path', alias: 'M', type: String, description: 'Change node_modules path.' },
   { group: 'modules', name: 'dev', alias: 'D', type: Boolean, description: 'Copy modules in devDependencies also.' },
@@ -67,7 +65,6 @@ const app = distize({
   src: args.src.length > 0 ? args.src : '.',
   basePath: cwd,
   out: args.out,
-  ignore: args.ignore,
   modulePath: args['module-path'],
   noModules: args['no-modules'],
   dev: args.dev,

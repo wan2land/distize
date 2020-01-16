@@ -23,37 +23,19 @@ npm install distize --save
 ### CLI
 
 ```bash
+# copy current path(.) to dist directory
 npx distize
-npx distize ./build --ignore ./src --out output
+
+# copy specific path to custom dist directory
+npx distize output libs/* --out mydist
 ```
 
-### API
-
-```ts
-interface DistizeOptions {
-    src: string[] | string
-    out?: string
-    ignore?: string[]
-    noModules?: boolean
-    cwd?: string
-    devDeps?: false
-}
-
-interface DistizeEventEmitter extends EventEmitter {
-    on(event: 'progress', listener: (name: 'CLEAN' | 'COPY_SOURCES' | 'COPY_NODE_MODULES') => void): this
-    on(event: 'fs_mkdir', listener: (path: string) => void): this
-    on(event: 'fs_copy', listener: (src: string, dest: string) => void): this
-    on(event: 'done', listener: () => void): this
-}
-
-function distize(options: DistizeOptions): DistizeEventEmitter
-```
+### Javascript
 
 ```js
 import { distize } from 'distize'
 
 await distize({ src: '.' })
-await distize({ src: './build', out: './dist' })
 ```
 
 ## Examples
@@ -95,3 +77,25 @@ file: `package.json`
     "typescript": "^3.7.3"
   }
 }
+```
+
+## API
+
+```ts
+interface DistizeOptions {
+  src: string[] | string
+  basePath?: string
+  out?: string
+  modulePath?: string
+  noModules?: boolean
+  dev?: false
+}
+
+export interface DistizeResult extends Promise<void> {
+  on(event: 'progress', listener: (name: 'CLEAN' | 'COPY_SOURCE_FILES' | 'COPY_NODE_MODULES') => void): this
+  on(event: 'copy', listener: (src: string, dest: string) => void): this
+  on(event: 'done', listener: () => void): this
+}
+
+function distize(options: DistizeOptions): DistizeResult
+```
