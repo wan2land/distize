@@ -8,6 +8,13 @@ export interface CopySourceFilesInterface extends CopyOptions {
 }
 
 export function copySourceFiles(src: string | string[], dest: string, options: CopySourceFilesInterface = {}): Promise<void> {
+  if (!src) {
+    throw new TypeError('Missing source path(or pattern) argument.')
+  }
+  if (!dest) {
+    throw new TypeError('Missing destination directory argument.')
+  }
+
   const basePath = options.basePath ? resolve(process.cwd(), options.basePath) : process.cwd()
 
   return glob(src)
