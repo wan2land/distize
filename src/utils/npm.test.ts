@@ -27,7 +27,7 @@ describe('testsuite of utils/npm', () => {
     expect(await listPackagePaths({ noDeps: false })).toEqual(packages)
     expect(await listPackagePaths({ devDeps: false })).toEqual(packages)
     expect(await listPackagePaths({ noDeps: false, devDeps: false })).toEqual(packages)
-  }, 10000)
+  }, 30000)
 
   it('test listPackagePaths, noDeps=true', async () => {
     const packages = await listPackagePaths({ noDeps: true })
@@ -35,7 +35,7 @@ describe('testsuite of utils/npm', () => {
 
     // Same Options
     expect(await listPackagePaths({ noDeps: true, devDeps: false })).toEqual(packages)
-  }, 10000)
+  }, 30000)
 
   it('test listPackagePaths, devDeps=true', async () => {
     const packages = await listPackagePaths({ devDeps: true })
@@ -49,5 +49,5 @@ describe('testsuite of utils/npm', () => {
 
     // Same Options
     expect(await listPackagePaths({ devDeps: true, noDeps: false })).toEqual(packages)
-  }, 10000)
+  }, 30000)
 })
