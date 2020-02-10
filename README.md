@@ -28,6 +28,9 @@ npx distize
 
 # copy specific path to custom dist directory
 npx distize output libs/* --out mydist
+
+# copy node_modules only
+npx distize --no-files
 ```
 
 ### Javascript
@@ -50,8 +53,10 @@ file: `package.json`
 ```json
 {
   "scripts": {
-    "build": "rimraf ./build && babel ./src --out-dir ./build --extensions \".ts\" && distize ./build --out ./dist",
-    "deploy": "npm run build && cdk deploy"
+    "build": "npm run build:infra && npm run build:server",
+    "build:server": "babel ./src --out-dir ./src-dist --extensions \".ts\"",
+    "build:infra": "babel ./infra --out-dir ./infra-dist --extensions \".ts\"",
+    "deploy": "npm run build && distize ./src-dist/* && cdk deploy"
   },
   "dependencies": {
     "core-js": "^3.6.0"
@@ -71,7 +76,7 @@ file: `package.json`
     "@types/graphql": "14.5.0",
     "@types/node": "^12.12.21",
     "aws-cdk": "^1.19.0",
-    "distize": "0.0.1",
+    "distize": "^1.1.0",
     "rimraf": "^3.0.0",
     "source-map-support": "^0.5.16",
     "typescript": "^3.7.3"

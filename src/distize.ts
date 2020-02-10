@@ -37,6 +37,9 @@ export function distize(options: DistizeOptions): DistizeResult {
       return remove(dest)
     })
     .then(() => {
+      if (Array.isArray(options.src) && options.src.length === 0) {
+        return Promise.resolve()
+      }
       emitter.emit('progress', 'COPY_SOURCE_FILES')
       return copySourceFiles(options.src, dest, {
         basePath: options.basePath,
@@ -44,9 +47,12 @@ export function distize(options: DistizeOptions): DistizeResult {
       })
     })
     .then(() => {
+      if (options.noModules) {
+        return Promise.resolve()
+      }
       emitter.emit('progress', 'COPY_NODE_MODULES')
       const modulePath = options.modulePath && resolve(basePath, options.modulePath.replace(/\/node_modules\/?$/, '')) || basePath
-      return options.noModules ? Promise.resolve() : copyNodeModules(dest, {
+      return copyNodeModules(dest, {
         basePath: options.basePath,
         cwd: modulePath,
         devDeps: options.dev,
