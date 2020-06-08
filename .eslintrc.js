@@ -3,8 +3,8 @@ module.exports = {
     jest: true,
   },
   extends: [
-    '@stdjs',
-    '@stdjs/eslint-config/typescript',
+    'stable',
+    'stable/typescript',
   ],
   ignorePatterns: [
     'node_modules/',
