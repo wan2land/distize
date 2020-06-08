@@ -29,6 +29,9 @@ npx distize
 # copy specific path to custom dist directory
 npx distize output libs/* --out mydist
 
+# remove mydist directory and copy specific path to custom dist directory
+npx distize output libs/* --out mydist --clean
+
 # copy node_modules only
 npx distize --no-files
 ```
@@ -39,6 +42,35 @@ npx distize --no-files
 import { distize } from 'distize'
 
 await distize({ src: '.' })
+```
+
+## Documents
+
+```
+Usage:
+
+  $ distize <path ...> [options]
+
+Synopsis:
+
+  $ distize [--timeout ms] --src file ...
+  $ distize --help
+
+Options:
+
+  -h, --help         Display this usage info.
+  -V, --version      Output the version number.
+  -v, --verbose      Increase the verbosity of messages.
+  -o, --out string   Copy all input files into an output directory.
+                     [default: dist]
+  --clean            Remove output directory.
+
+Module Options:
+
+  --no-files                 Run without copying files.
+  --no-modules               Run without copying node_modules.
+  -M, --module-path string   Change node_modules path.
+  -D, --dev                  Copy modules in devDependencies also.
 ```
 
 ## Examples
@@ -56,7 +88,7 @@ file: `package.json`
     "build": "npm run build:infra && npm run build:server",
     "build:server": "babel ./src --out-dir ./src-dist --extensions \".ts\"",
     "build:infra": "babel ./infra --out-dir ./infra-dist --extensions \".ts\"",
-    "deploy": "npm run build && distize ./src-dist/* && cdk deploy"
+    "deploy": "npm run build && distize ./src-dist/* --clean && cdk deploy"
   },
   "dependencies": {
     "core-js": "^3.6.0"
@@ -77,7 +109,6 @@ file: `package.json`
     "@types/node": "^12.12.21",
     "aws-cdk": "^1.19.0",
     "distize": "^1.1.0",
-    "rimraf": "^3.0.0",
     "source-map-support": "^0.5.16",
     "typescript": "^3.7.3"
   }
@@ -92,6 +123,7 @@ interface DistizeOptions {
   basePath?: string
   out?: string
   modulePath?: string
+  clean?: boolean
   noModules?: boolean
   dev?: false
 }

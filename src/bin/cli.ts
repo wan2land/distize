@@ -2,7 +2,7 @@
 
 import commandLineArgs from 'command-line-args'
 import commandLineUsage from 'command-line-usage'
-import ora from 'ora'
+import ora, { Ora } from 'ora'
 
 import { distize } from '../distize'
 
@@ -15,6 +15,7 @@ const cmdOptions = [
   { group: 'build', name: 'verbose', alias: 'v', type: Boolean, description: 'Increase the verbosity of messages.' },
 
   { group: 'build', name: 'out', alias: 'o', type: String, description: 'Copy all input files into an output directory.\n[default: {bold dist}]', defaultValue: 'dist' },
+  { group: 'build', name: 'clean', type: Boolean, description: 'Remove output directory.' },
 
   { group: 'modules', name: 'no-files', type: Boolean, description: 'Run without copying files.' },
   { group: 'modules', name: 'no-modules', type: Boolean, description: 'Run without copying node_modules.' },
@@ -66,28 +67,34 @@ const app = distize({
   src: args['no-files'] ? [] : args.src.length > 0 ? args.src : '.',
   basePath: cwd,
   out: args.out,
+  clean: args.clean,
   modulePath: args['module-path'],
   noModules: args['no-modules'],
   dev: args.dev,
 })
 
-let spinner = ora(`Clean old dist files, "${args.out}"`).start()
+let spinner = null as Ora | null
 app.on('progress', (name) => {
   switch (name) {
+    case 'CLEAN': {
+      spinner?.succeed()
+      spinner = ora(`Clean old dist files, "${args.out}"`).start()
+      break
+    }
     case 'COPY_SOURCE_FILES': {
-      spinner.succeed()
+      spinner?.succeed()
       spinner = ora('Copy source files').start()
       break
     }
     case 'COPY_NODE_MODULES': {
-      spinner.succeed()
+      spinner?.succeed()
       spinner = ora('Copy node_modules').start()
       break
     }
   }
 })
 app.on('done', () => {
-  spinner.succeed()
+  spinner?.succeed()
 })
 
 if (args.verbose) {
