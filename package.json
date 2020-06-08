@@ -47,7 +47,7 @@
     "@stdjs/eslint-config": "2.0.0",
     "@types/command-line-args": "5.0.0",
     "@types/command-line-usage": "5.0.1",
-    "@types/glob": "7.1.1",
+    "@types/glob": "7.1.2",
     "@types/jest": "25.2.3",
     "@types/node": "12.12.38",
     "eslint": "6.8.0",
