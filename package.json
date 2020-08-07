@@ -34,7 +34,7 @@
     "command-line-usage": "^6.1.0",
     "core-js": "^3.2.1",
     "glob": "^7.1.6",
-    "ora": "^4.0.3"
+    "ora": "^5.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.10.5",
