@@ -37,13 +37,13 @@
     "ora": "^4.0.3"
   },
   "devDependencies": {
-    "@babel/cli": "7.12.16",
-    "@babel/core": "7.12.16",
+    "@babel/cli": "7.12.17",
+    "@babel/core": "7.12.17",
     "@babel/plugin-proposal-class-properties": "7.12.13",
     "@babel/plugin-proposal-object-rest-spread": "7.12.13",
-    "@babel/plugin-proposal-optional-chaining": "7.12.16",
-    "@babel/preset-env": "7.12.16",
-    "@babel/preset-typescript": "7.12.16",
+    "@babel/plugin-proposal-optional-chaining": "7.12.17",
+    "@babel/preset-env": "7.12.17",
+    "@babel/preset-typescript": "7.12.17",
     "@types/command-line-args": "5.0.0",
     "@types/command-line-usage": "5.0.1",
     "@types/glob": "7.1.3",
