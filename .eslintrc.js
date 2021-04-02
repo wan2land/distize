@@ -1,6 +1,9 @@
 module.exports = {
   overrides: [
     {
+      env: {
+        jest: true,
+      },
       files: [
         '**/*.ts',
       ],
