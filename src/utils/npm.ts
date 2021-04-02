@@ -19,8 +19,11 @@ export function listPackagePaths(options: ListPackagesOptions = {}): Promise<str
     return Promise.resolve([])
   }
 
-  return new Promise((resolve) => {
-    exec(command, { cwd: options.cwd }, (_, stdout) => {
+  return new Promise((resolve, reject) => {
+    exec(command, { cwd: options.cwd }, (err, stdout) => {
+      if (err) {
+        return reject(err)
+      }
       const packages = stdout.toString().split('\n').filter(line => {
         const matches = line.match(RE_NODE_MODULES)
         return matches && matches.length === 1
