@@ -1,16 +1,26 @@
 module.exports = {
-  env: {
-    jest: true,
-  },
-  extends: [
-    'stable',
-    'stable/typescript',
+  overrides: [
+    {
+      files: [
+        '**/*.ts',
+      ],
+      extends: [
+        'stable',
+        'stable/typescript',
+      ],
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+        tsconfigRootDir: __dirname,
+        project: ['./tsconfig.json'],
+      },
+    },
+    {
+      files: [
+        '**/*.js',
+      ],
+      extends: [
+        'stable',
+      ],
+    },
   ],
-  ignorePatterns: [
-    'node_modules/',
-  ],
-  parserOptions: {
-    tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json'],
-  },
 }
