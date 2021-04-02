@@ -11,7 +11,6 @@ export interface DistizeOptions {
   basePath?: string
   out?: string
   modulePath?: string
-  clean?: boolean
   noModules?: boolean
   dev?: false
 }
@@ -34,9 +33,6 @@ export function distize(options: DistizeOptions): DistizeResult {
 
   const promise = Promise.resolve()
     .then(() => {
-      if (!options.clean) {
-        return Promise.resolve()
-      }
       emitter.emit('progress', 'CLEAN')
       return remove(dest)
     })

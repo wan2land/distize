@@ -67,7 +67,6 @@ const app = distize({
   src: args['no-files'] ? [] : args.src.length > 0 ? args.src : '.',
   basePath: cwd,
   out: args.out,
-  clean: args.clean,
   modulePath: args['module-path'],
   noModules: args['no-modules'],
   dev: args.dev,

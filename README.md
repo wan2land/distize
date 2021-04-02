@@ -29,9 +29,6 @@ npx distize
 # copy specific path to custom dist directory
 npx distize output libs/* --out mydist
 
-# remove mydist directory and copy specific path to custom dist directory
-npx distize output libs/* --out mydist --clean
-
 # copy node_modules only
 npx distize --no-files
 ```
@@ -63,7 +60,6 @@ Options:
   -v, --verbose      Increase the verbosity of messages.
   -o, --out string   Copy all input files into an output directory.
                      [default: dist]
-  --clean            Remove output directory.
 
 Module Options:
 
@@ -88,7 +84,7 @@ file: `package.json`
     "build": "npm run build:infra && npm run build:server",
     "build:server": "babel ./src --out-dir ./src-dist --extensions \".ts\"",
     "build:infra": "babel ./infra --out-dir ./infra-dist --extensions \".ts\"",
-    "deploy": "npm run build && distize ./src-dist/* --clean && cdk deploy"
+    "deploy": "npm run build && distize ./src-dist/* && cdk deploy"
   },
   "dependencies": {
     "core-js": "^3.6.0"
