@@ -119,7 +119,6 @@ interface DistizeOptions {
   basePath?: string
   out?: string
   modulePath?: string
-  clean?: boolean
   noModules?: boolean
   dev?: false
 }
