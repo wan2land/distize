@@ -32,7 +32,7 @@
   "dependencies": {
     "command-line-args": "^5.1.1",
     "command-line-usage": "^6.1.0",
-    "core-js": "^3.2.1",
+    "core-js": "^3.10.0",
     "glob": "^7.1.6",
     "ora": "^5.0.0"
   },
