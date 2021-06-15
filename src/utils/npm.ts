@@ -10,11 +10,11 @@ export interface ListPackagesOptions {
 }
 
 export function listPackagePaths(options: ListPackagesOptions = {}): Promise<string[]> {
-  let command = 'npm ls --prod=true --parseable=true'
+  let command = 'npm ls --prod=true --parseable=true --all'
   if (options.devDeps && options.noDeps) {
-    command = 'npm ls --dev=true --parseable=true'
+    command = 'npm ls --dev=true --parseable=true --all'
   } else if (options.devDeps) {
-    command = 'npm ls --parseable=true'
+    command = 'npm ls --parseable=true --all'
   } else if (options.noDeps) {
     return Promise.resolve([])
   }
