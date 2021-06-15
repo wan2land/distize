@@ -47,7 +47,7 @@ describe('testsuite of distize', () => {
       'COPY_NODE_MODULES',
       true,
     ])
-  })
+  }, 60000)
 
   it('test distize without modules', async () => {
     await remove('dist')

@@ -60,6 +60,9 @@ function rmdirPromise(path: string): Promise<void> {
   return new Promise((resolve, reject) => {
     rmdir(path, (err) => {
       if (err) {
+        if (err.code === 'ENOTEMPTY') {
+          return resolve()
+        }
         return reject(err)
       }
       return resolve()
