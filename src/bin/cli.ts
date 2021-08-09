@@ -15,7 +15,7 @@ const cmdOptions = [
   { group: 'build', name: 'verbose', alias: 'v', type: Boolean, description: 'Increase the verbosity of messages.' },
 
   { group: 'build', name: 'out', alias: 'o', type: String, description: 'Copy all input files into an output directory.\n[default: {bold dist}]', defaultValue: 'dist' },
-  { group: 'build', name: 'clean', type: Boolean, description: 'Remove output directory.' },
+  { group: 'build', name: 'no-clean', type: Boolean, description: 'Without cleaning the output directory.' },
 
   { group: 'modules', name: 'no-files', type: Boolean, description: 'Run without copying files.' },
   { group: 'modules', name: 'no-modules', type: Boolean, description: 'Run without copying node_modules.' },
@@ -67,6 +67,7 @@ const app = distize({
   src: args['no-files'] ? [] : args.src.length > 0 ? args.src : '.',
   basePath: cwd,
   out: args.out,
+  noClean: args['no-clean'],
   modulePath: args['module-path'],
   noModules: args['no-modules'],
   dev: args.dev,

@@ -27,7 +27,7 @@ npm install distize --save
 npx distize
 
 # copy specific path to custom dist directory
-npx distize output libs/* --out mydist
+npx distize libs/* graphql/* --out mydist
 
 # copy node_modules only
 npx distize --no-files
@@ -60,6 +60,7 @@ Options:
   -v, --verbose      Increase the verbosity of messages.
   -o, --out string   Copy all input files into an output directory.
                      [default: dist]
+  --no-clean         Without cleaning the output directory.
 
 Module Options:
 

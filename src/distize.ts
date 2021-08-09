@@ -11,6 +11,7 @@ export interface DistizeOptions {
   basePath?: string
   out?: string
   modulePath?: string
+  noClean?: boolean
   noModules?: boolean
   dev?: false
 }
@@ -33,6 +34,9 @@ export function distize(options: DistizeOptions): DistizeResult {
 
   const promise = Promise.resolve()
     .then(() => {
+      if (options.noClean) {
+        return Promise.resolve()
+      }
       emitter.emit('progress', 'CLEAN')
       return remove(dest)
     })
@@ -52,12 +56,13 @@ export function distize(options: DistizeOptions): DistizeResult {
       }
       emitter.emit('progress', 'COPY_NODE_MODULES')
       const modulePath = options.modulePath && resolve(basePath, options.modulePath.replace(/\/node_modules\/?$/, '')) || basePath
-      return copyNodeModules(dest, {
+
+      return remove(resolve(dest, 'node_modules')).then(() => copyNodeModules(dest, {
         basePath: options.basePath,
         cwd: modulePath,
         devDeps: options.dev,
         onCopy,
-      })
+      }))
     })
     .then(() => {
       emitter.emit('done')
