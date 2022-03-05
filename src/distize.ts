@@ -23,8 +23,8 @@ export interface DistizeResult extends Promise<void> {
 }
 
 export function distize(options: DistizeOptions): DistizeResult {
-  const basePath = options.basePath || process.cwd()
-  const dest = resolve(basePath, options.out || 'dist')
+  const basePath = options.basePath ?? process.cwd()
+  const dest = resolve(basePath, options.out ?? 'dist')
 
   const emitter = new EventEmitter()
 
