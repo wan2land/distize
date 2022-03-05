@@ -16,6 +16,9 @@ module.exports = {
         tsconfigRootDir: __dirname,
         project: ['./tsconfig.json'],
       },
+      rules: {
+        'unicorn/prefer-spread': 'warn',
+      },
     },
     {
       files: [
@@ -24,6 +27,9 @@ module.exports = {
       extends: [
         'stable',
       ],
+      rules: {
+        'unicorn/prefer-spread': 'warn',
+      },
     },
   ],
 }

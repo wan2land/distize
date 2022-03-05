@@ -1,7 +1,7 @@
 import { exec } from 'child_process'
 
 
-const RE_NODE_MODULES = /[\/\\]node_modules[\/\\]/g;
+const RE_NODE_MODULES = /[/\\]node_modules[/\\]/g
 
 export interface ListPackagesOptions {
   cwd?: string
