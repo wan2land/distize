@@ -3,10 +3,7 @@
     "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": [
-      "es2017",
-      "esnext.asynciterable"
-    ],
+    "lib": ["es2017", "esnext.asynciterable"],
     "outDir": "lib",
     "declaration": true,
     "pretty": true,
@@ -15,7 +12,5 @@
     "esModuleInterop": true,
     "noImplicitReturns": true
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

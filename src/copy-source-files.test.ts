@@ -4,7 +4,6 @@ import { copySourceFiles } from './copy-source-files'
 import { remove } from './utils/fs'
 import { glob } from './utils/path'
 
-
 describe('testsuite of copy-source-files', () => {
   let beforeCwd = ''
 

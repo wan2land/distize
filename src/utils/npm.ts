@@ -1,6 +1,5 @@
 import { exec } from 'child_process'
 
-
 const RE_NODE_MODULES = /[/\\]node_modules[/\\]/g
 
 export interface ListPackagesOptions {
@@ -9,7 +8,9 @@ export interface ListPackagesOptions {
   noDeps?: boolean
 }
 
-export function listPackagePaths(options: ListPackagesOptions = {}): Promise<string[]> {
+export function listPackagePaths(
+  options: ListPackagesOptions = {}
+): Promise<string[]> {
   let command = 'npm ls --prod=true --parseable=true --all'
   if (options.devDeps && options.noDeps) {
     command = 'npm ls --dev=true --parseable=true --all'
@@ -24,10 +25,13 @@ export function listPackagePaths(options: ListPackagesOptions = {}): Promise<str
       if (err) {
         return reject(err)
       }
-      const packages = stdout.toString().split('\n').filter(line => {
-        const matches = line.match(RE_NODE_MODULES)
-        return matches && matches.length === 1
-      })
+      const packages = stdout
+        .toString()
+        .split('\n')
+        .filter((line) => {
+          const matches = line.match(RE_NODE_MODULES)
+          return matches && matches.length === 1
+        })
       resolve(packages)
     })
   })

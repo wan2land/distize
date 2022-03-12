@@ -1,4 +1,13 @@
-import { lstat, mkdir, readdir, readFile, rmdir, Stats, unlink, writeFile } from 'fs'
+import {
+  lstat,
+  mkdir,
+  readdir,
+  readFile,
+  rmdir,
+  Stats,
+  unlink,
+  writeFile,
+} from 'fs'
 import { dirname, join } from 'path'
 
 function lstatPromise(path: string): Promise<Stats> {
@@ -82,34 +91,46 @@ function unlinkPromise(path: string): Promise<void> {
 }
 
 export function remove(path: string): Promise<void> {
-  return lstatPromise(path).then((status) => {
-    if (status.isDirectory()) {
-      return readdirPromise(path)
-        .then((files) => files.reduce((carry, file) => {
-          return carry.then(() => remove(join(path, file)))
-        }, Promise.resolve()))
-        .then(() => rmdirPromise(path))
-    }
-    return unlinkPromise(path)
-  }).catch((e) => {
-    if (e.code === 'ENOENT') {
-      return
-    }
-    return console.error(e)
-  })
+  return lstatPromise(path)
+    .then((status) => {
+      if (status.isDirectory()) {
+        return readdirPromise(path)
+          .then((files) =>
+            files.reduce((carry, file) => {
+              return carry.then(() => remove(join(path, file)))
+            }, Promise.resolve())
+          )
+          .then(() => rmdirPromise(path))
+      }
+      return unlinkPromise(path)
+    })
+    .catch((e) => {
+      if (e.code === 'ENOENT') {
+        return
+      }
+      return console.error(e)
+    })
 }
 
 export interface CopyOptions {
   onCopy?: (src: string, dest: string) => any
 }
 
-export function copy(src: string, dest: string, options: CopyOptions = {}): Promise<void> {
+export function copy(
+  src: string,
+  dest: string,
+  options: CopyOptions = {}
+): Promise<void> {
   return lstatPromise(src).then((srcStat) => {
     // src is directory
     if (srcStat.isDirectory()) {
-      return readdirPromise(src).then((files) => files.reduce((carry, file) => {
-        return carry.then(() => copy(join(src, file), join(dest, file), options))
-      }, Promise.resolve()))
+      return readdirPromise(src).then((files) =>
+        files.reduce((carry, file) => {
+          return carry.then(() =>
+            copy(join(src, file), join(dest, file), options)
+          )
+        }, Promise.resolve())
+      )
     }
 
     const destDir = dirname(dest)
@@ -130,6 +151,8 @@ export function copy(src: string, dest: string, options: CopyOptions = {}): Prom
         return console.error(e)
       })
       .then(() => readFilePromise(src))
-      .then((body) => writeFilePromise(dest, body).then(() => options.onCopy?.(src, dest)))
+      .then((body) =>
+        writeFilePromise(dest, body).then(() => options.onCopy?.(src, dest))
+      )
   })
 }
