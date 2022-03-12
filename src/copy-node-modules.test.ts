@@ -4,13 +4,7 @@ import { copyNodeModules } from './copy-node-modules'
 import { remove } from './utils/fs'
 import { glob } from './utils/path'
 
-const deps = [
-  'command-line-args',
-  'command-line-usage',
-  'core-js',
-  'glob',
-  'ora',
-]
+const deps = ['command-line-args', 'command-line-usage', 'glob', 'ora']
 
 describe('testsuite of copy-node-modules', () => {
   let beforeCwd = ''

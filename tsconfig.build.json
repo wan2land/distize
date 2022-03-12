@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "buildOptions": {
+    "declaration": true
+  },
+  "exclude": [
+    "**/*.test.ts"
+  ]
+}
