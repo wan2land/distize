@@ -1,6 +1,6 @@
 {
   "name": "distize",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Copy source files and node_modules without devDependencies to destination directory.",
   "keywords": [
     "build",
