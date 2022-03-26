@@ -1,6 +1,12 @@
 {
   "extends": ["config:base", "docker:disable"],
   "automerge": true,
+  "packageRules": [
+    {
+      "matchPackageNames": ["ora"],
+      "matchCurrentVersion": "^5"
+    }
+  ],
   "major": {
     "automerge": false
   }
