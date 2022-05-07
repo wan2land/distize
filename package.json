@@ -40,7 +40,7 @@
     "@commitlint/cli": "16.2.4",
     "@commitlint/config-conventional": "16.2.4",
     "@swc/cli": "0.1.57",
-    "@swc/core": "1.2.177",
+    "@swc/core": "1.2.178",
     "@swc/jest": "^0.2.20",
     "@types/command-line-args": "5.2.0",
     "@types/command-line-usage": "5.0.2",
