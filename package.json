@@ -33,7 +33,7 @@
   "dependencies": {
     "command-line-args": "^5.1.1",
     "command-line-usage": "^6.1.0",
-    "glob": "^7.1.6",
+    "glob": "^10.0.0",
     "ora": "^5.4.1"
   },
   "devDependencies": {
