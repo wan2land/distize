@@ -44,7 +44,7 @@
     "@swc/jest": "^0.2.36",
     "@types/command-line-args": "5.2.3",
     "@types/command-line-usage": "5.0.4",
-    "@types/glob": "7.2.0",
+    "@types/glob": "8.1.0",
     "@types/jest": "^29.5.12",
     "@types/node": "20.12.7",
     "@typescript-eslint/eslint-plugin": "5.62.0",
