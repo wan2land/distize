@@ -1,7 +1,7 @@
 import { basename, resolve } from 'path'
 
 import { copy, CopyOptions } from './utils/fs'
-import { glob } from './utils/path'
+import { glob } from 'glob'
 
 export interface CopySourceFilesInterface extends CopyOptions {
   basePath?: string
@@ -10,7 +10,7 @@ export interface CopySourceFilesInterface extends CopyOptions {
 export function copySourceFiles(
   src: string | string[],
   dest: string,
-  options: CopySourceFilesInterface = {}
+  options: CopySourceFilesInterface = {},
 ): Promise<void> {
   if (!src) {
     throw new TypeError('Missing source path(or pattern) argument.')
@@ -33,7 +33,7 @@ export function copySourceFiles(
               onCopy: options.onCopy,
             })
           }),
-        Promise.resolve()
-      )
+        Promise.resolve(),
+      ),
     )
 }

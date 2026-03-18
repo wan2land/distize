@@ -98,7 +98,7 @@ export function remove(path: string): Promise<void> {
           .then((files) =>
             files.reduce((carry, file) => {
               return carry.then(() => remove(join(path, file)))
-            }, Promise.resolve())
+            }, Promise.resolve()),
           )
           .then(() => rmdirPromise(path))
       }
@@ -119,7 +119,7 @@ export interface CopyOptions {
 export function copy(
   src: string,
   dest: string,
-  options: CopyOptions = {}
+  options: CopyOptions = {},
 ): Promise<void> {
   return lstatPromise(src).then((srcStat) => {
     // src is directory
@@ -127,9 +127,9 @@ export function copy(
       return readdirPromise(src).then((files) =>
         files.reduce((carry, file) => {
           return carry.then(() =>
-            copy(join(src, file), join(dest, file), options)
+            copy(join(src, file), join(dest, file), options),
           )
-        }, Promise.resolve())
+        }, Promise.resolve()),
       )
     }
 
@@ -152,7 +152,7 @@ export function copy(
       })
       .then(() => readFilePromise(src))
       .then((body) =>
-        writeFilePromise(dest, body).then(() => options.onCopy?.(src, dest))
+        writeFilePromise(dest, body).then(() => options.onCopy?.(src, dest)),
       )
   })
 }

@@ -9,7 +9,7 @@ export interface ListPackagesOptions {
 }
 
 export function listPackagePaths(
-  options: ListPackagesOptions = {}
+  options: ListPackagesOptions = {},
 ): Promise<string[]> {
   let command = 'npm ls --prod=true --parseable=true --all'
   if (options.devDeps && options.noDeps) {

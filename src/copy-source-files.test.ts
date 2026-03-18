@@ -2,7 +2,7 @@ import { resolve } from 'path'
 
 import { copySourceFiles } from './copy-source-files'
 import { remove } from './utils/fs'
-import { glob } from './utils/path'
+import { glob } from 'glob'
 
 describe('testsuite of copy-source-files', () => {
   let beforeCwd = ''

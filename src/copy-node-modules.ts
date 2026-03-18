@@ -11,7 +11,7 @@ export interface CopyNodeModulesOptions
 
 export function copyNodeModules(
   dest: string,
-  options: CopyNodeModulesOptions = {}
+  options: CopyNodeModulesOptions = {},
 ): Promise<void> {
   if (!dest) {
     throw new TypeError('Missing destination directory argument.')
@@ -29,11 +29,11 @@ export function copyNodeModules(
             resolve(
               basePath,
               dest,
-              pkgAbsPath.slice(pkgAbsPath.indexOf('node_modules'))
-            )
+              pkgAbsPath.slice(pkgAbsPath.indexOf('node_modules')),
+            ),
           )
         }),
-      Promise.resolve()
+      Promise.resolve(),
     )
   })
 }

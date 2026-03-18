@@ -19,8 +19,8 @@ export interface DistizeResult extends Promise<void> {
   on(
     event: 'progress',
     listener: (
-      name: 'CLEAN' | 'COPY_SOURCE_FILES' | 'COPY_NODE_MODULES'
-    ) => void
+      name: 'CLEAN' | 'COPY_SOURCE_FILES' | 'COPY_NODE_MODULES',
+    ) => void,
   ): this
   on(event: 'copy', listener: (src: string, dest: string) => void): this
   on(event: 'done', listener: () => void): this
@@ -63,7 +63,7 @@ export function distize(options: DistizeOptions): DistizeResult {
         (options.modulePath &&
           resolve(
             basePath,
-            options.modulePath.replace(/\/node_modules\/?$/, '')
+            options.modulePath.replace(/\/node_modules\/?$/, ''),
           )) ||
         basePath
 
@@ -73,7 +73,7 @@ export function distize(options: DistizeOptions): DistizeResult {
           cwd: modulePath,
           devDeps: options.dev,
           onCopy,
-        })
+        }),
       )
     })
     .then(() => {

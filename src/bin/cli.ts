@@ -3,7 +3,7 @@
 import commandLineArgs from 'command-line-args'
 import commandLineUsage from 'command-line-usage'
 import ora, { Ora } from 'ora'
-
+import packageJson from '../../package.json'
 import { distize } from '../distize'
 
 const cmdOptions = [
@@ -85,7 +85,7 @@ const cmdOptions = [
 const args = commandLineArgs(cmdOptions)._all
 
 if (args.version) {
-  console.log(`v${require('../../package.json').version}`) // eslint-disable-line @typescript-eslint/no-var-requires
+  console.log(`v${packageJson.version}`)
   process.exit(0)
 }
 
@@ -115,7 +115,7 @@ if (args.help) {
         optionList: cmdOptions,
         group: 'modules',
       },
-    ]).replace(/^\s+/, '')
+    ]).replace(/^\s+/, ''),
   )
   process.exit(args.help ? 0 : 1)
 }
@@ -161,7 +161,7 @@ if (args.verbose) {
     console.log(
       `> Copy file "${src.replace(cwd, '').replace(/^\/+/, '')}" to "${dest
         .replace(cwd, '')
-        .replace(/^\/+/, '')}"`
+        .replace(/^\/+/, '')}"`,
     )
   })
 }

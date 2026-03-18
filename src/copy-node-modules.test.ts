@@ -1,8 +1,8 @@
 import { resolve } from 'path'
 
+import { glob } from 'glob'
 import { copyNodeModules } from './copy-node-modules'
 import { remove } from './utils/fs'
-import { glob } from './utils/path'
 
 const deps = ['command-line-args', 'command-line-usage', 'glob', 'ora']
 

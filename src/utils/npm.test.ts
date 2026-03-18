@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 import { resolve } from 'path'
 
 import { listPackagePaths } from './npm'
 
-const deps = Object.keys(require('../../package.json').dependencies) // eslint-disable-line
-const devDeps = Object.keys(require('../../package.json').devDependencies) // eslint-disable-line
+const deps = Object.keys(require('../../package.json').dependencies)
+const devDeps = Object.keys(require('../../package.json').devDependencies)
 
 describe('testsuite of utils/npm', () => {
   const BASE_PATH = resolve(__dirname, '../..')
@@ -27,7 +29,7 @@ describe('testsuite of utils/npm', () => {
     expect(await listPackagePaths({ noDeps: false })).toEqual(packages)
     expect(await listPackagePaths({ devDeps: false })).toEqual(packages)
     expect(await listPackagePaths({ noDeps: false, devDeps: false })).toEqual(
-      packages
+      packages,
     )
   }, 30000)
 
@@ -37,7 +39,7 @@ describe('testsuite of utils/npm', () => {
 
     // Same Options
     expect(await listPackagePaths({ noDeps: true, devDeps: false })).toEqual(
-      packages
+      packages,
     )
   }, 30000)
 
@@ -53,7 +55,7 @@ describe('testsuite of utils/npm', () => {
 
     // Same Options
     expect(await listPackagePaths({ devDeps: true, noDeps: false })).toEqual(
-      packages
+      packages,
     )
   }, 30000)
 })
