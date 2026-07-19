@@ -41,7 +41,7 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.35.0",
     "@swc/cli": "0.8.1",
-    "@swc/core": "1.15.43",
+    "@swc/core": "1.15.46",
     "@swc/jest": "^0.2.39",
     "@types/command-line-args": "5.2.3",
     "@types/command-line-usage": "5.0.4",
