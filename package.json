@@ -37,8 +37,8 @@
     "ora": "^8.2.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
     "@eslint/js": "^9.35.0",
     "@swc/cli": "0.8.1",
     "@swc/core": "1.15.46",
