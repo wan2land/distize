@@ -39,7 +39,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@eslint/js": "^9.35.0",
+    "@eslint/js": "^10.0.0",
     "@swc/cli": "0.8.1",
     "@swc/core": "1.15.46",
     "@swc/jest": "^0.2.39",
@@ -49,7 +49,7 @@
     "@types/node": "22.20.1",
     "@typescript-eslint/eslint-plugin": "8.65.0",
     "@typescript-eslint/parser": "8.65.0",
-    "eslint": "9.39.5",
+    "eslint": "10.7.0",
     "eslint-config-prettier": "10.1.8",
     "globals": "^16.4.0",
     "husky": "9.1.7",
